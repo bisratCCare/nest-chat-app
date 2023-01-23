@@ -1,4 +1,4 @@
-import { RoomInformation } from '../room/room.interface';
+import { RoomInformation } from '../room/room.dto';
 import { UserInformation } from './../../../user/model/user.interface';
 
 export interface MessageInformation {

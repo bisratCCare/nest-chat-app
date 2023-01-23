@@ -2,7 +2,7 @@ import { MessageInformation } from './../../model/message/message.interface';
 import { Injectable } from '@nestjs/common/decorators';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { RoomInformation } from '../../model/room/room.interface';
+import { RoomInformation } from '../../model/room/room.dto';
 import { MessageEntity } from 'src/chat/model/message/message.entity';
 import {
   IPaginationOptions,

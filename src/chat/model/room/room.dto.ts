@@ -1,6 +1,6 @@
 import { UserInformation } from 'src/user/model/user.interface';
 
-export interface RoomInformation {
+export class RoomInformation {
   id?: string;
   name?: string;
   description?: string;

@@ -14,7 +14,7 @@ import { ConnectedUserService } from '../service/connected-user/connected-user.s
 import { JoinedRoomService } from '../service/joined-room/joined-room.service';
 import { MessageService } from '../service/message/message.service';
 import { UserInformation } from 'src/user/model/user.interface';
-import { RoomInformation } from '../model/room/room.interface';
+import { RoomInformation } from '../model/room/room.dto';
 import { ConnectedUserInformation } from '../model/connected-user/connected-user.interface';
 import { PageInformation } from '../model/page.interface';
 import { MessageInformation } from '../model/message/message.interface';
@@ -55,7 +55,6 @@ export class ChatGateway
       const user: UserInformation = await this.userService.getOne(
         token.user.id,
       );
-      console.log({ user });
       if (!user) {
         return this.disconnect(socket);
       } else {

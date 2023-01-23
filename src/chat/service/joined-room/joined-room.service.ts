@@ -4,7 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { JoinedRoomInformation } from '../../model/joined-room/joined-room.interface';
 import { UserInformation } from 'src/user/model/user.interface';
-import { RoomInformation } from '../../model/room/room.interface';
+import { RoomInformation } from '../../model/room/room.dto';
 
 @Injectable()
 export class JoinedRoomService {

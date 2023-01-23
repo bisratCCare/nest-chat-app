@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { RoomEntity } from '../../model/room/room.entity';
-import { RoomInformation } from '../../model/room/room.interface';
+import { RoomInformation } from '../../model/room/room.dto';
 import { UserInformation } from 'src/user/model/user.interface';
 import {
   IPaginationOptions,
@@ -48,7 +48,7 @@ export class RoomService {
     room: RoomInformation,
     creator: UserInformation,
   ): Promise<RoomInformation> {
-    room.users.push(creator);
+    room.users = [creator];
     return room;
   }
 }

@@ -1,5 +1,5 @@
 import { UserInformation } from 'src/user/model/user.interface';
-import { RoomInformation } from '../room/room.interface';
+import { RoomInformation } from '../room/room.dto';
 export interface JoinedRoomInformation {
   id?: string;
   socketId: string;
