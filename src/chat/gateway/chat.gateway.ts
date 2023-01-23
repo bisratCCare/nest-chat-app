@@ -21,6 +21,12 @@ import { MessageInformation } from '../model/message/message.interface';
 import { JoinedRoomInformation } from '../model/joined-room/joined-room.interface';
 import { ApiTags } from '@nestjs/swagger';
 import { Logger } from '@nestjs/common';
+import { AsyncApiPub } from 'nestjs-asyncapi/dist/lib/decorators';
+import { CreateUserDto } from 'src/user/model/dto/create-user.dto';
+import { Routes } from './routes.enums';
+import { PageInfo } from './pageInfo.dto';
+import { MessageInfo } from './messageInfo.dto';
+import { Empty } from './empty.dto';
 
 @WebSocketGateway({
   namespace: 'chat',
@@ -85,7 +91,13 @@ export class ChatGateway
     socket.emit('Error', new UnauthorizedException());
     socket.disconnect();
   }
-  @SubscribeMessage('createRoom')
+  @AsyncApiPub({
+    channel: Routes.CREATEROOM,
+    message: {
+      payload: RoomInformation,
+    },
+  })
+  @SubscribeMessage(Routes.CREATEROOM)
   async onCreateRoom(socket: Socket, room: RoomInformation) {
     const createdRoom: RoomInformation = await this.roomService.createRoom(
       room,
@@ -103,7 +115,14 @@ export class ChatGateway
       }
     }
   }
-  @SubscribeMessage('paginateRooms')
+
+  @AsyncApiPub({
+    channel: Routes.PAGINATEROOMS,
+    message: {
+      payload: PageInfo,
+    },
+  })
+  @SubscribeMessage(Routes.PAGINATEROOMS)
   async onPaginateRoom(socket: Socket, page: PageInformation) {
     const rooms = await this.roomService.getRoomsForUser(
       socket.data.user.id,
@@ -111,7 +130,14 @@ export class ChatGateway
     );
     return this.server.to(socket.id).emit('rooms', rooms);
   }
-  @SubscribeMessage('joinRoom')
+
+  @AsyncApiPub({
+    channel: Routes.JOINROOM,
+    message: {
+      payload: RoomInformation,
+    },
+  })
+  @SubscribeMessage(Routes.JOINROOM)
   async onJoinRoom(socket: Socket, room: RoomInformation) {
     const messages = await this.messageService.findMessagesForRoom(room, {
       limit: 10,
@@ -126,12 +152,26 @@ export class ChatGateway
     //sending last messages from room to user
     await this.server.to(socket.id).emit('messages', messages);
   }
-  @SubscribeMessage('leaveRoom')
+
+  @AsyncApiPub({
+    channel: Routes.LEAVEROOM,
+    message: {
+      payload: Empty,
+    },
+  })
+  @SubscribeMessage(Routes.LEAVEROOM)
   async onLeaveRoom(socket: Socket) {
     // remove connectin from joined rooms
     await this.joinedRoomService.deleteBySocketId(socket.id);
   }
-  @SubscribeMessage('addMessage')
+
+  @AsyncApiPub({
+    channel: Routes.ADDMESSAGE,
+    message: {
+      payload: MessageInfo,
+    },
+  })
+  @SubscribeMessage(Routes.ADDMESSAGE)
   async onAddMessage(socket: Socket, message: MessageInformation) {
     const createdMessage: MessageInformation = await this.messageService.create(
       { ...message, user: socket.data.user },
