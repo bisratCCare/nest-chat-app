@@ -22,7 +22,7 @@ export class JoinedRoomService {
     return this.joinedRoomRepository.findBy({ user });
   }
   async findByRoom(room: RoomInformation): Promise<JoinedRoomInformation[]> {
-    return this.joinedRoomRepository.findBy({ room });
+    return this.joinedRoomRepository.findBy({});
   }
   async deleteBySocketId(socketId: string) {
     return this.joinedRoomRepository.delete({ socketId });
