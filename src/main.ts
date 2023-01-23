@@ -2,6 +2,8 @@ import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import { AsyncApiDocumentBuilder } from 'nestjs-asyncapi';
+import { AsyncApiModule } from 'nestjs-asyncapi/dist/lib/asyncapi.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -16,18 +18,23 @@ async function bootstrap() {
     .setVersion(process.env.BACKEND_VERSION)
     .build();
 
-  // Remove script-src and require-trusted-types-for for the Swagger endpoint
-  // app.use(swaggerEndpoint, (req, res, next) => {
-  //   const cspHeaders = res.getHeader('content-security-policy');
+  const asyncApiOptions = new AsyncApiDocumentBuilder()
+    .setTitle('Chat App')
+    .setDescription('This a nestjs chat app implementing socket.io')
+    .setVersion('1.0')
+    .setDefaultContentType('application/json')
+    .addSecurity('user-password', { type: 'userPassword' })
+    .addServer('ws protocol', {
+      url: 'ws://localhost:3000',
+      protocol: 'socket.io',
+    })
+    .build();
 
-  //   res.set(
-  //     'content-security-policy',
-  //     cspHeaders.replace(/script-src.*;/, ''),
-  //     //.replace(/require-trusted-types-for.*;/, ''),
-  //   );
-
-  //   next();
-  // });
+  const asyncapiDocument = await AsyncApiModule.createDocument(
+    app,
+    asyncApiOptions,
+  );
+  await AsyncApiModule.setup('sock', app, asyncapiDocument);
 
   const document = SwaggerModule.createDocument(app, config);
 
